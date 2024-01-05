@@ -49,12 +49,19 @@ jobs:
         
           # Port-forwarding
           kubectl port-forward service/my-ruby-app 8080:80 &
-          sleep 10 # Wait for port-forwarding to establish
 
           # Test 1: /healthcheck
-          echo -e "GET /healthcheck HTTP/1.1\r\n" | nc localhost 8080
-          sleep 5
+          response1=$(echo -e "GET /healthcheck HTTP/1.1\r\n" | nc localhost 8080)
+          echo "Response 1: $response1"
+          if [[ ! "$response1" == *"OK"* ]]; then
+            echo "Test 1 failed: /healthcheck did not return 'OK'"
+            exit 1
+          fi
 
-          # Test 2: /nonexistent (any other endpoint)
-          echo -e "GET /nonexistent HTTP/1.1\r\n" | nc localhost 8080
-          sleep 5
+          # Test 2: /nonexistent
+          response2=$(echo -e "GET /nonexistent HTTP/1.1\r\n" | nc localhost 8080)
+          echo "Response 2: $response2"
+          if [[ ! "$response2" == *"Well, hello there!"* ]]; then
+            echo "Test 2 failed: /nonexistent did not return 'Well, hello there!'"
+            exit 1
+          fi
