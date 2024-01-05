@@ -48,7 +48,7 @@ jobs:
           sleep 10
         
           # Port-forwarding
-          kubectl port-forward service/my-ruby-app 8080:80
+          kubectl port-forward service/ruby-server 8080:80
 
           # Define expected responses
           expected_response1="OK"
@@ -58,8 +58,18 @@ jobs:
           response1=$(echo -e "GET /healthcheck HTTP/1.1\r\n" | nc localhost 8080)
           echo "Expected Response 1: $expected_response1"
           echo "Actual Response 1: $response1"
+          if [[ ! "$response1" == *"$expected_response1"* ]]; then
+            echo "Test 1: Response did not match expected."
+          else
+            echo "Test 1: Response matches expected."
+          fi
 
           # Test 2: /nonexistent
           response2=$(echo -e "GET /nonexistent HTTP/1.1\r\n" | nc localhost 8080)
           echo "Expected Response 2: $expected_response2"
           echo "Actual Response 2: $response2"
+          if [[ ! "$response2" == *"$expected_response2"* ]]; then
+            echo "Test 2: Response did not match expected."
+          else
+            echo "Test 2: Response matches expected."
+          fi
