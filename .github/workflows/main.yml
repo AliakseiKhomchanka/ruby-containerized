@@ -46,6 +46,7 @@ jobs:
 
       - name: Log infrastructure
         run: |
+          sleep 10
           kubectl get services
           kubectl get deployments
           kubectl get pods
@@ -53,10 +54,6 @@ jobs:
       
       - name: Test endpoint
         run: |
-
-          # Wait for the app to start up (rudimentary, needs a more reliable method in production, of course)
-          sleep 10
-        
           # Port-forwarding
           kubectl port-forward service/ruby-server 8080:80
           sleep 10
