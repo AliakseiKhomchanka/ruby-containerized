@@ -37,10 +37,20 @@ jobs:
       - name: Set up Kubernetes-in-Docker (KIND)
         uses: helm/kind-action@v1.8.0 
 
+      - name: Set up namespace
+        run: kubectl create namespace dev
+
       - name: Deploy with Helm
         run: |
-          helm upgrade --install my-ruby-app ./helm/ruby-server --set image.repository=akhomchanka/ruby-server --set image.tag=${{ github.sha }}
+          helm upgrade --install ruby-server ./helm/ruby-server --set image.repository=akhomchanka/ruby-server --set image.tag=${{ github.sha }} --namespace dev
 
+      - name: Log infrastructure
+        run: |
+          sleep 5
+          kubectl get services -n dev
+          kubectl get deployments -n dev
+          kubectl get pods -n dev
+      
       - name: Test endpoint
         run: |
 
@@ -48,7 +58,8 @@ jobs:
           sleep 10
         
           # Port-forwarding
-          kubectl port-forward service/ruby-server 8080:80
+          kubectl port-forward service/ruby-server 8080:80 -n dev
+          sleep 10
 
           # Define expected responses
           expected_response1="OK"
