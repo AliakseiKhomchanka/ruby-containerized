@@ -55,7 +55,7 @@ jobs:
       - name: Test endpoint
         run: |
           # Port-forwarding
-          kubectl port-forward service/ruby-server 8080:80
+          kubectl port-forward service/ruby-server 8080:80 &
           sleep 10
 
           # Define expected responses
