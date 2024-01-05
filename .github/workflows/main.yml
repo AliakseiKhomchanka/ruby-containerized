@@ -48,7 +48,7 @@ jobs:
           sleep 10
         
           # Port-forwarding
-          kubectl port-forward service/my-ruby-app 8080:80 &
+          kubectl port-forward service/my-ruby-app 8080:80
 
           # Define expected responses
           expected_response1="OK"
