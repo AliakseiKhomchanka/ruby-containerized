@@ -42,14 +42,13 @@ jobs:
 
       - name: Deploy with Helm
         run: |
-          helm upgrade --install ruby-server ./helm/ruby-server --set image.repository=akhomchanka/ruby-server --set image.tag=${{ github.sha }} --namespace dev
+          helm upgrade --install ruby-server ./helm/ruby-server --set image.repository=akhomchanka/ruby-server --set image.tag=${{ github.sha }}
 
       - name: Log infrastructure
         run: |
-          sleep 5
-          kubectl get services -n dev
-          kubectl get deployments -n dev
-          kubectl get pods -n dev
+          kubectl get services
+          kubectl get deployments
+          kubectl get pods
       
       - name: Test endpoint
         run: |
@@ -58,7 +57,7 @@ jobs:
           sleep 10
         
           # Port-forwarding
-          kubectl port-forward service/ruby-server 8080:80 -n dev
+          kubectl port-forward service/ruby-server 8080:80
           sleep 10
 
           # Define expected responses
